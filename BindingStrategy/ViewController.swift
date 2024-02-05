@@ -11,17 +11,40 @@ import Combine
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var tableView: UITableView!
     private var posts = [Post]()
-    
-    lazy var viewModel: ViewModel = {
+    private var cancellables = Set<AnyCancellable>()
+    private let input: PassthroughSubject<ViewModel.Input, Never> = .init()
+    private lazy var viewModel: ViewModel = {
         let model = ViewModel()
-        model.delegate = self
         return model
         }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getAllPosts()
+        bind()
         tableView.register(MyTableViewCell.self, forCellReuseIdentifier: MyTableViewCell.reuseIdentifier)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        input.send(.viewDidAppear)
+    }
+    
+    private func bind() {
+        let output = viewModel.transform(input: input.eraseToAnyPublisher())
+        
+        output.receive(on: DispatchQueue.main)
+            .sink {[weak self] event in
+                switch event {
+                case .fetchPostsFailed(let error):
+                    print(error.localizedDescription)
+                case .fetchPostsSucceed(let posts):
+                    self?.posts = posts
+                    self?.tableView.reloadData()
+                case .handleActivityIndicate(let isEnabled):
+                    //handle data activity indicator
+                    print("Will show actitivityIndicator: \(isEnabled)")
+                }
+            }.store(in: &cancellables)
     }
 
      func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -36,16 +59,5 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
          cell.bodyLabel.text = post.body
         
         return cell
-    }
-}
-
-extension ViewController: ViewModelType {
-    func isIndicator(enabled: Bool) {
-        //Show activity Indicator
-    }
-    
-    func postData(fromServer: [Post]) {
-        self.posts = fromServer
-        self.tableView.reloadData()
     }
 }

@@ -8,34 +8,48 @@
 import Foundation
 import Combine
 
-protocol ViewModelType: AnyObject {
-    func isIndicator(enabled: Bool)
-    func postData(fromServer: [Post])
-}
 class ViewModel: NSObject {
-    private let networkService = NetworkManager.shared
-    public weak var delegate: ViewModelType?
-    
-    func getAllPosts() {
-        DispatchQueue.global().async { [weak self] in
-            self?.networkService.getPosts(handler: {[weak self] result in
-                switch result {
-                case .success(let success):
-                    DispatchQueue.main.async {
-                        self?.delegate?.postData(fromServer: success)
-                    }
-                case .failure(let failure):
-                    DispatchQueue.main.async {
-                        self?.setError(failure.localizedDescription)
-                    }
-                }
-            })
-        }
+    enum Input {
+        case viewDidAppear
+        case pullToRefresh
     }
     
-    func setError(_ message: String) {
-        print("Error: \(message)")
+    enum Output {
+        case fetchPostsSucceed(posts: [Post])
+        case fetchPostsFailed(error: Error)
+        case handleActivityIndicate(isEnabled: Bool)
+    }
+    
+    private let networkAPIService: NetworkManagerType
+    private let output: PassthroughSubject<Output, Never> = .init()
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(networkAPIService: NetworkManagerType = NetworkManager.shared) {
+        self.networkAPIService = networkAPIService
+    }
+    
+    public func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
+        input.sink{ [weak self] events in
+            switch events {
+            case .pullToRefresh, .viewDidAppear:
+                self?.handlePostServerData()
+            }
+        }.store(in: &cancellables)
+        
+        return output.eraseToAnyPublisher()
+    }
+    
+    private func handlePostServerData() {
+        output.send(.handleActivityIndicate(isEnabled: false))
+        
+        networkAPIService.getPosts().sink(receiveCompletion: { [weak self] completion in
+            self?.output.send(.handleActivityIndicate(isEnabled: true))
+            
+            if case .failure(let failure) = completion {
+                self?.output.send(.fetchPostsFailed(error: failure))
+            }
+        }, receiveValue: { [weak self] posts in
+            self?.output.send(.fetchPostsSucceed(posts: posts))
+        }).store(in: &cancellables)
     }
 }
-
-extension ViewModel: ObservableObject {}

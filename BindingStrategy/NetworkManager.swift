@@ -6,38 +6,30 @@
 //
 
 import Foundation
+import Combine
 
 enum APIError: Error {
     case api(description: String)
 }
 
-class NetworkManager {
+protocol NetworkManagerType: AnyObject {
+    func getPosts() -> AnyPublisher<[Post], Error>
+}
+
+class NetworkManager: NetworkManagerType {
     static let shared = NetworkManager()
     private init() {}
     
-    func getPosts(handler: @escaping (Result<[Post], APIError>) -> Void) {
+    func getPosts() -> AnyPublisher<[Post], Error> {
         let apiUrl = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-
+        
         let session = URLSession.shared
-
-        let task = session.dataTask(with: apiUrl) { (data, response, error) in
-            if let error = error {
-                handler(.failure(.api(description: "Error: \(error.localizedDescription)")))
-                return
-            }
-
-            guard let data = data else {
-                handler(.failure(.api(description: "No data received")))
-                return
-            }
-
-            do {
-                let posts = try JSONDecoder().decode([Post].self, from: data)
-                handler(.success(posts))
-            } catch {
-                handler(.failure(.api(description: "Error decoding JSON: \(error.localizedDescription)")))
-            }
-        }
-        task.resume()
+        
+        return session.dataTaskPublisher(for: apiUrl)
+            .catch({ error in
+                return Fail(error: error).eraseToAnyPublisher()
+            }).map({ $0.data
+            }).decode(type: [Post].self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
     }
 }
