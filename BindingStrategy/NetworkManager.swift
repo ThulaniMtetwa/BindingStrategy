@@ -21,7 +21,7 @@ class NetworkManager: NetworkManagerType {
     private init() {}
     
     func getPosts() -> AnyPublisher<[Post], Error> {
-        let apiUrl = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let apiUrl = URL(string: "https://jsonplaceholder.typicode.com/postz")!
         
         let session = URLSession.shared
         

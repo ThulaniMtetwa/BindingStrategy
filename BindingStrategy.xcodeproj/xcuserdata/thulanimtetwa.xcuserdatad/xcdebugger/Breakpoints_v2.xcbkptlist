@@ -3,4 +3,101 @@
    uuid = "028E2106-2C6E-489F-BDFE-1310E767CD51"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "21AC5F66-BD22-403A-A675-FF8406FB2E9D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BindingStrategy/ViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "handlePostServerData()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7872C331-6EAB-4734-8575-D424FB909810"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BindingStrategy/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
+            landmarkName = "bind()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "7872C331-6EAB-4734-8575-D424FB909810 - 480e19877d0700b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BindingStrategy.ViewController.bind() -&gt; ()"
+                  moduleName = "BindingStrategy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/thulanimtetwa/Documents/2024/January/Practical/BindingStrategy/BindingStrategy/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "31"
+                  endingLineNumber = "31"
+                  offsetFromSymbolStart = "894">
+               </Location>
+               <Location
+                  uuid = "7872C331-6EAB-4734-8575-D424FB909810 - 6c3d3cadca67bf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Array&lt;BindingStrategy.Post&gt;) -&gt; () in BindingStrategy.ViewController.bind() -&gt; ()"
+                  moduleName = "BindingStrategy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/thulanimtetwa/Documents/2024/January/Practical/BindingStrategy/BindingStrategy/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "31"
+                  endingLineNumber = "31"
+                  offsetFromSymbolStart = "209">
+               </Location>
+               <Location
+                  uuid = "7872C331-6EAB-4734-8575-D424FB909810 - 6c3d3cadca67bf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Array&lt;BindingStrategy.Post&gt;) -&gt; () in BindingStrategy.ViewController.bind() -&gt; ()"
+                  moduleName = "BindingStrategy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/thulanimtetwa/Documents/2024/January/Practical/BindingStrategy/BindingStrategy/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "31"
+                  endingLineNumber = "31"
+                  offsetFromSymbolStart = "81">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5F070832-2658-4FD2-8889-5609A23254E6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BindingStrategy/ViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "handlePostServerData()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

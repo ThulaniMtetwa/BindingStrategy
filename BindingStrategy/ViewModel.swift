@@ -8,48 +8,45 @@
 import Foundation
 import Combine
 
-class ViewModel: NSObject {
-    enum Input {
-        case viewDidAppear
-        case pullToRefresh
+enum ViewModelError: Error, Equatable, LocalizedError {
+    case getPosts
+    var errorDescription: String? {
+        switch self {
+        case .getPosts:
+            return NSLocalizedString(
+                "Failed to get Posts from Server",
+                comment: ""
+            )
+        }
     }
-    
-    enum Output {
-        case fetchPostsSucceed(posts: [Post])
-        case fetchPostsFailed(error: Error)
-        case handleActivityIndicate(isEnabled: Bool)
-    }
-    
-    private let networkAPIService: NetworkManagerType
-    private let output: PassthroughSubject<Output, Never> = .init()
+}
+
+enum ViewModelState: Equatable {
+    case loading
+    case finishedLoading
+    case error(ViewModelError)
+}
+
+class ViewModel: NSObject, ObservableObject {
+    private var networkAPIService: NetworkManagerType
     private var cancellables = Set<AnyCancellable>()
+    @Published private(set) var fetchPostsSucceed = [Post]()
+    @Published private(set) var state: ViewModelState = .loading
     
     init(networkAPIService: NetworkManagerType = NetworkManager.shared) {
         self.networkAPIService = networkAPIService
     }
     
-    public func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
-        input.sink{ [weak self] events in
-            switch events {
-            case .pullToRefresh, .viewDidAppear:
-                self?.handlePostServerData()
-            }
-        }.store(in: &cancellables)
-        
-        return output.eraseToAnyPublisher()
-    }
-    
-    private func handlePostServerData() {
-        output.send(.handleActivityIndicate(isEnabled: false))
+    public func handlePostServerData() {
+        state = .loading
         
         networkAPIService.getPosts().sink(receiveCompletion: { [weak self] completion in
-            self?.output.send(.handleActivityIndicate(isEnabled: true))
-            
             if case .failure(let failure) = completion {
-                self?.output.send(.fetchPostsFailed(error: failure))
+                self?.state = .error(.getPosts)
             }
         }, receiveValue: { [weak self] posts in
-            self?.output.send(.fetchPostsSucceed(posts: posts))
+            self?.fetchPostsSucceed = posts
+            self?.state = .finishedLoading
         }).store(in: &cancellables)
     }
 }
